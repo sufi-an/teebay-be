@@ -11,6 +11,14 @@ const queries = {
     });
     return token;
   },
+
+  getAllUsers: async(
+    _: any
+  )=>{
+    const user = await UserService.getUserById();
+    return user;
+  },
+
   getCurrentLoggedInUser: async (_: any, parameters: any, context: any) => {
     if (context && context.user) {
       const id = context.user.id;
