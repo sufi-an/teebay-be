@@ -20,3 +20,13 @@ model User {
 
   @@map("users")
 }
+
+model Product{
+  id String @id @default(uuid())
+  title String
+  category String
+  description String
+  price Float  @default(0.00)
+  rentPrice Float?  @default(0.00) @map("rent_price")
+  rentType String? @map("rent_type")
+}
