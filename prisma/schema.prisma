@@ -11,22 +11,30 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  firstName String @map("first_name")
-  lastName String? @map("last_name")
-  email String @unique
-  password String
-  salt String
+  id        String  @id @default(uuid())
+  firstName String  @map("first_name")
+  lastName  String? @map("last_name")
+  email     String  @unique
+  password  String
+  salt      String
 
   @@map("users")
 }
 
-model Product{
-  id String @id @default(uuid())
-  title String
-  category String
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String
+  product   Product[]
+  
+}
+
+model Product {
+  id          String     @id @default(uuid())
+  title       String
   description String
-  price Float  @default(0.00)
-  rentPrice Float?  @default(0.00) @map("rent_price")
-  rentType String? @map("rent_type")
+  price       Float      @default(0.00)
+  rentPrice   Float?     @default(0.00) @map("rent_price")
+  rentType    String?    @map("rent_type")
+  category    Category[]
 }

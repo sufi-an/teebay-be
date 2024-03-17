@@ -1,8 +1,10 @@
 import { prismaClient } from "../lib/db";
 
+
+
 export interface CreateProductPayload {
     title: string,
-    category: string,
+    category:[string],
     description: string,
     price: number,
     rentPrice?:number,
@@ -13,7 +15,7 @@ export interface CreateProductPayload {
 export interface UpdateProdductPayload{
     id:string,
     title?: string,
-    category?: string,
+    category?: [string],
     description?: string,
     price?: number,
     rentPrice?:number,
@@ -23,40 +25,55 @@ export interface UpdateProdductPayload{
 
 class ProductService{
 
-    public static createProduct(payload:CreateProductPayload){
+    public static async createProduct (payload:CreateProductPayload){
         const {title,category,description,price,rentPrice,rentType} = payload
+        console.log(category)
+
         
-        return prismaClient.product.create({
+        const product = await prismaClient.product.create({
             data:{
                 title,
-                category,
                 description,
                 price,
                 rentPrice,
                 rentType
             }
         })
+        const categories = category.map((categoryId) => ({ id: categoryId }))
+        console.log(categories)
+        if (category && category.length > 0) {
+            await prismaClient.product.update({
+              where: { id: product.id },
+              data: {
+                category: {
+                  connect: category.map((categoryId) => ({ id: categoryId })),
+                },
+              },
+            });
+        }
+        return product
     }
 
     public static updateProduct = async ( payload:UpdateProdductPayload ) => {
-        try {
-            const {id,title,category,description,price,rentPrice,rentType} = payload
-            const input = {
-                title,
-                category,
-                description,
-                price,
-                rentPrice,
-                rentType
-            }
-          const updatedProduct = await prismaClient.product.update({
-            where: { id },
-            data: input,
-          });
-          return updatedProduct;
-        } catch (error:any) {
-          throw new Error(`Error updating product: ${error.message}`);
-        }
+        // try {
+        //     const {id,title,category,description,price,rentPrice,rentType} = payload
+        //     const input = {
+        //         title,
+        //         category,
+        //         description,
+        //         price,
+        //         rentPrice,
+        //         rentType
+        //     }
+        //   const updatedProduct = await prismaClient.product.update({
+        //     where: { id },
+        //     data: input,
+        //   });
+        //   return updatedProduct;
+        // } catch (error:any) {
+        //   throw new Error(`Error updating product: ${error.message}`);
+        // }
+        return 'test update'
       };
     
     public static deleteProduct(id:string){
@@ -64,7 +81,20 @@ class ProductService{
     }
     
     public static getProductByUser(id?: string) {
-        return prismaClient.product.findMany({ where: { id } });
+        return prismaClient.product.findMany(
+            { 
+                where: { id },
+                include: {
+                    category: {
+                      select: {
+                        id: true, // Include the 'id' field
+                        name: true,
+                        slug:true // Include the 'name' field
+                        // Add other relevant fields you want to retrieve
+                      },
+                    },
+                  } 
+         });
       }
 
 }

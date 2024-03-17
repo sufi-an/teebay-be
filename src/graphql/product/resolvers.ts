@@ -2,18 +2,17 @@ import ProductService, { CreateProductPayload, UpdateProdductPayload } from "../
 // getUserToken
 const queries = {
   getProductByUser: async (_: any, parameters: any, context: any) => {
-    // console.log(parameters,context)
     const products = await ProductService.getProductByUser(parameters.userId);
+    console.log(products)
       return products;
-    // throw new Error("I dont know who are you");
-    // return 'Product list'
+   
   },
 
 };
 
 const mutations = {
-  createProduct: async (_: any, payload: CreateProductPayload) => {
-
+  createProduct: async (_: any, payload: any) => {
+    // console.log(payload)
     const res = await ProductService.createProduct(payload);
     return res.id;
 
@@ -21,7 +20,7 @@ const mutations = {
   updateProduct:async (_: any, payload: UpdateProdductPayload) => {
 
     const res = await ProductService.updateProduct(payload);
-    return res.id;
+    return res
 
   },
   deleteProduct:async (_: any, parameters: any) => {
