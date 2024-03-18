@@ -18,6 +18,11 @@ model User {
   password  String
   salt      String
 
+  purchases    Purchase[] @relation("buyer")
+  sales        Purchase[] @relation("seller")
+
+  borrows      Rent[] @relation("borrower")
+  lends        Rent[] @relation("lender")
   @@map("users")
 }
 
@@ -37,4 +42,32 @@ model Product {
   rentPrice   Float?     @default(0.00) @map("rent_price")
   rentType    String?    @map("rent_type")
   category    Category[]
+
+  purchases Purchase[]
+  rents     Rent[]
 }
+
+model Purchase {
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id])
+  buyer     User     @relation("buyer", fields: [buyerId], references: [id])
+  seller    User     @relation("seller", fields: [sellerId], references: [id])
+  productId String
+  buyerId   String
+  sellerId  String
+
+  createdAt DateTime @default(now())
+}
+  
+model Rent {
+  id        String   @id @default(uuid())
+  product   Product  @relation(fields: [productId], references: [id])
+  borrower  User     @relation("borrower", fields: [borrowerId], references: [id])
+  lender    User     @relation("lender", fields: [lenderId], references: [id])
+  productId String
+  borrowerId   String
+  lenderId  String
+
+  createdAt DateTime @default(now())
+}
+  
