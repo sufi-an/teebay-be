@@ -14,7 +14,9 @@ model User {
   id        String  @id @default(uuid())
   firstName String  @map("first_name")
   lastName  String? @map("last_name")
+  address   String  @default("")
   email     String  @unique
+  phoneNo   String  @default("")
   password  String
   salt      String
 
@@ -68,6 +70,8 @@ model Rent {
   borrowerId   String
   lenderId  String
 
+  fromDate DateTime
+  toDate   DateTime
   createdAt DateTime @default(now())
 }
   

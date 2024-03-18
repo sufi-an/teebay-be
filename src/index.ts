@@ -2,11 +2,11 @@ import express from "express";
 import { expressMiddleware } from "@apollo/server/express4";
 import createApolloGraphqlServer from "./graphql";
 import UserService from "./services/user";
-
+import cors from "cors";
 async function init() {
   const app = express();
   const PORT = Number(process.env.PORT) || 8000;
-
+  app.use(cors())
   app.use(express.json());
 
   app.get("/", (req, res) => {

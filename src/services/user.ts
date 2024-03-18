@@ -7,8 +7,11 @@ const JWT_SECRET = "$uperM@n@123";
 export interface CreateUserPayload {
   firstName: string;
   lastName?: string;
+  address?: string;
   email: string;
+  phoneNo?:string;
   password: string;
+  confirmPassword:string
 }
 
 export interface GetUserTokenPayload {
@@ -29,8 +32,10 @@ class UserService {
   }
 
   public static registration(payload: CreateUserPayload) {
-    const { firstName, lastName, email, password } = payload;
-
+    const { firstName, lastName,address, email, phoneNo, password, confirmPassword } = payload;
+    if (password !== confirmPassword){
+      throw new Error("Both Passwords Should Match");
+    }
     const salt = randomBytes(32).toString("hex");
     const hashedPassword = UserService.generateHash(salt, password);
 
@@ -38,7 +43,9 @@ class UserService {
       data: {
         firstName,
         lastName,
+        address,
         email,
+        phoneNo,
         salt,
         password: hashedPassword,
       },
