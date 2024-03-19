@@ -1,3 +1,4 @@
 export const queries = `#graphql
-    getProductByUser(userId: ID): [Product]
+    getProductByUser(userId: String): [Product]
+    getProductById(id:String!):Product
 `;

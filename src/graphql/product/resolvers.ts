@@ -7,6 +7,10 @@ const queries = {
       return products;
    
   },
+  getProductById:async (_: any, parameters: any, context: any) =>{
+    const product = await ProductService.getProductById(parameters.id)
+    return product
+  }
 
 };
 
@@ -20,7 +24,7 @@ const mutations = {
   updateProduct:async (_: any, payload: UpdateProdductPayload) => {
 
     const res = await ProductService.updateProduct(payload);
-    return res
+    return res.id
 
   },
   deleteProduct:async (_: any, parameters: any) => {

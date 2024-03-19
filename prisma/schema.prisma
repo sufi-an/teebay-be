@@ -20,20 +20,21 @@ model User {
   password  String
   salt      String
 
-  purchases    Purchase[] @relation("buyer")
-  sales        Purchase[] @relation("seller")
+  purchases Purchase[] @relation("buyer")
+  sales     Purchase[] @relation("seller")
 
-  borrows      Rent[] @relation("borrower")
-  lends        Rent[] @relation("lender")
+  borrows Rent[]    @relation("borrower")
+  lends   Rent[]    @relation("lender")
+  Product Product[]
+
   @@map("users")
 }
 
 model Category {
-  id        String   @id @default(uuid())
-  name      String
-  slug      String
-  product   Product[]
-  
+  id      String    @id @default(uuid())
+  name    String
+  slug    String
+  product Product[]
 }
 
 model Product {
@@ -45,33 +46,35 @@ model Product {
   rentType    String?    @map("rent_type")
   category    Category[]
 
+  owner       User? @relation(fields: [userId], references: [id])
+
   purchases Purchase[]
   rents     Rent[]
+  userId    String
 }
 
 model Purchase {
-  id        String   @id @default(uuid())
-  product   Product  @relation(fields: [productId], references: [id])
-  buyer     User     @relation("buyer", fields: [buyerId], references: [id])
-  seller    User     @relation("seller", fields: [sellerId], references: [id])
+  id        String  @id @default(uuid())
+  product   Product @relation(fields: [productId], references: [id])
+  buyer     User    @relation("buyer", fields: [buyerId], references: [id])
+  seller    User    @relation("seller", fields: [sellerId], references: [id])
   productId String
   buyerId   String
   sellerId  String
 
   createdAt DateTime @default(now())
 }
-  
-model Rent {
-  id        String   @id @default(uuid())
-  product   Product  @relation(fields: [productId], references: [id])
-  borrower  User     @relation("borrower", fields: [borrowerId], references: [id])
-  lender    User     @relation("lender", fields: [lenderId], references: [id])
-  productId String
-  borrowerId   String
-  lenderId  String
 
-  fromDate DateTime
-  toDate   DateTime
+model Rent {
+  id         String  @id @default(uuid())
+  product    Product @relation(fields: [productId], references: [id])
+  borrower   User    @relation("borrower", fields: [borrowerId], references: [id])
+  lender     User    @relation("lender", fields: [lenderId], references: [id])
+  productId  String
+  borrowerId String
+  lenderId   String
+
+  fromDate  DateTime?
+  toDate    DateTime?
   createdAt DateTime @default(now())
 }
-  
