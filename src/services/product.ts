@@ -90,9 +90,11 @@ class ProductService{
         
       };
     
-    public static deleteProduct(id:string){
-        return prismaClient.product.delete({ where: { id } });
-    }
+    public static deleteProduct(id?:string){
+        const status= prismaClient.product.delete({ where: { id } });
+        console.log(status)
+        return "succesfullty Deleted"
+      }
     
     public static getProductByUser(userId?: string) {
       console.log(userId)

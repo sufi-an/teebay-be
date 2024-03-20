@@ -30,9 +30,9 @@ const mutations = {
 
   },
   deleteProduct:async (_: any, parameters: any) => {
-    
-    const res = await ProductService.deleteProduct(parameters.id);
-    return res.id;
+    console.log(parameters)
+    const res =  ProductService.deleteProduct(parameters.id);
+    return res;
     
   },
 };
