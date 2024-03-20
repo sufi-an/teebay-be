@@ -41,8 +41,8 @@ class ProductService{
                 userId
             }
         })
-        const categories = category.map((categoryId) => ({ id: categoryId }))
-        console.log(categories)
+        
+        // insert categories
         if (category && category.length > 0) {
             await prismaClient.product.update({
               where: { id: product.id },
@@ -71,6 +71,7 @@ class ProductService{
             data: input,
           });
           
+          // update categories
           if (category && category.length > 0) {
           
             await prismaClient.product.update({
@@ -101,19 +102,13 @@ class ProductService{
                 include: {
                     category: {
                       select: {
-                        id: true, // Include the 'id' field
+                        id: true, 
                         name: true,
-                        slug:true // Include the 'name' field
+                        slug:true 
                         // Add other relevant fields you want to retrieve
                       },
                     },
-                    // user:{
-                    //   select:{
-                    //     id:true,
-                    //     firstName:true,
-                    //     email:true
-                    //   }
-                    // }
+                   
                   } 
          });
       }
@@ -125,12 +120,14 @@ class ProductService{
                 include: {
                     category: {
                       select: {
-                        id: true, // Include the 'id' field
+                        id: true, 
                         name: true,
-                        slug:true // Include the 'name' field
+                        slug:true 
                         // Add other relevant fields you want to retrieve
                       },
+                      
                     },
+                    
                   } 
          });
       }

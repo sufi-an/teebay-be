@@ -19,42 +19,46 @@ class RentService{
 
 
         
-        const purchase = await prismaClient.rent.create({
+        const rent = await prismaClient.rent.create({
             data:{
               productId,borrowerId,lenderId
             }
         })
         
        
-        return purchase
+        return rent
     }
 
    
-    public static async getAllRentByUser(id?: string) {
-        const purchases =  await prismaClient.purchase.findMany(
-          { where: { id },
+    public static async getAllRentByUser(lenderId: string) {
+        const rents =  await prismaClient.rent.findMany(
+          { where: { lenderId },
           include: {
             product: {
               select: {
                 id: true, 
                 title: true,
-                price:true 
+                price:true, 
+                category:true,
+                description:true,
+                rentPrice:true,
+                rentType:true
                 // Add other relevant fields you want to retrieve
               },
             },
-            buyer: {
+            lender: {
               select: {
                 id: true, 
                 firstName: true,
-                lastName:true 
+                email:true 
                 // Add other relevant fields you want to retrieve
               },
             },
-            seller: {
+            borrower: {
               select: {
                 id: true, 
                 firstName: true,
-                lastName:true 
+                email:true 
                 // Add other relevant fields you want to retrieve
               },
             },
@@ -62,10 +66,48 @@ class RentService{
         }, 
           
           );
-          console.log(purchases)
-          return purchases
+          console.log(rents)
+          return rents
       }
-
+      public static async getAllBorrowByUser(borrowerId: string) {
+        const borrows =  await prismaClient.rent.findMany(
+          { where: { borrowerId },
+          include: {
+            product: {
+              select: {
+                id: true, 
+                title: true,
+                price:true, 
+                category:true,
+                description:true,
+                rentPrice:true,
+                rentType:true
+                // Add other relevant fields you want to retrieve
+              },
+            },
+            lender: {
+              select: {
+                id: true, 
+                firstName: true,
+                email:true 
+                // Add other relevant fields you want to retrieve
+              },
+            },
+            borrower: {
+              select: {
+                id: true, 
+                firstName: true,
+                email:true 
+                // Add other relevant fields you want to retrieve
+              },
+            },
+          } 
+        }, 
+          
+          );
+          console.log(borrows)
+          return borrows
+      }
 }
 
 export default RentService

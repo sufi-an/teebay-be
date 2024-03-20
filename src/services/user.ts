@@ -27,8 +27,11 @@ class UserService {
     return hashedPassword;
   }
 
-  public static getUserById(id?: string) {
+  public static getAllUsers(id?: string) {
     return prismaClient.user.findMany({ where: { id } });
+  }
+  public static getUserById(id?: string) {
+    return prismaClient.user.findUnique({ where: { id } });
   }
 
   public static registration(payload: CreateUserPayload) {
@@ -69,7 +72,8 @@ class UserService {
 
     // Gen Token
     const token = JWT.sign({ id: user.id, email: user.email }, JWT_SECRET);
-    return token;
+    // return token;
+    return user.id
   }
 
   public static decodeJWTToken(token: string) {

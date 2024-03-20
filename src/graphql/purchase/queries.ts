@@ -1,3 +1,4 @@
 export const queries = `#graphql
-getAllPurchase: [Purchase]
+getAllPurchaseByUser(buyerId:String!): [Purchase]
+getAllSalesByUser(sellerId:String!): [Purchase]
 `;

@@ -7,7 +7,7 @@ export const typeDefs = `#graphql
         price: Float!
         rentPrice:Float
         rentType: String
-        user: User
+        userId: String
     }
 
 `;

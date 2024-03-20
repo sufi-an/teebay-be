@@ -1,9 +1,16 @@
 import PurchaseService, { CreatePurchasePayload } from "../../services/purchase";
 // getUserToken
 const queries = {
-  getAllPurchase: async (_: any, parameters: any, context: any) => {
+  getAllPurchaseByUser: async (_: any, parameters: any, context: any) => {
     
-    const purchase = await PurchaseService.getAllPurchase();
+    const purchase = await PurchaseService.getAllPurchase(parameters.buyerId);
+    console.log(purchase)
+    return purchase
+  },
+  
+  getAllSalesByUser:async (_: any, parameters: any, context: any) => {
+    
+    const purchase = await PurchaseService.getAllSale(parameters.sellerId);
     console.log(purchase)
     return purchase
   },

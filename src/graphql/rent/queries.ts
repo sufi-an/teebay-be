@@ -1,3 +1,4 @@
 export const queries = `#graphql
-getAllRentByUser: [Rent]
+getAllRentByUser(lenderId:String!): [Rent]
+getAllBorrowByUser(borrowerId:String!): [Rent]
 `;

@@ -6,9 +6,16 @@ import RentService, { CreateRentPayload } from "../../services/Rent";
 const queries = {
   getAllRentByUser: async (_: any, parameters: any, context: any) => {
     
-    const rent = await RentService.getAllRentByUser();
+    const rent = await RentService.getAllRentByUser(parameters.lenderId);
     console.log(rent)
     return rent
+  },
+
+  getAllBorrowByUser:async (_: any, parameters: any, context: any) => {
+    
+    const borrow = await RentService.getAllBorrowByUser(parameters.borrowerId);
+    console.log(borrow)
+    return borrow
   },
 
 };
