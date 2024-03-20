@@ -1,19 +1,22 @@
 import { prismaClient } from "../lib/db";
 
+
+
 export interface CreateProductPayload {
     title: string,
-    category: string,
+    category:[string],
     description: string,
     price: number,
     rentPrice?:number,
     rentType?: string,
+    userId: string
 }
 
 
 export interface UpdateProdductPayload{
     id:string,
     title?: string,
-    category?: string,
+    category?: [string],
     description?: string,
     price?: number,
     rentPrice?:number,
@@ -23,19 +26,34 @@ export interface UpdateProdductPayload{
 
 class ProductService{
 
-    public static createProduct(payload:CreateProductPayload){
-        const {title,category,description,price,rentPrice,rentType} = payload
+    public static async createProduct (payload:CreateProductPayload){
+        const {title,category,description,price,rentPrice,rentType,userId} = payload
+        console.log(category)
+
         
-        return prismaClient.product.create({
+        const product = await prismaClient.product.create({
             data:{
                 title,
-                category,
                 description,
                 price,
                 rentPrice,
-                rentType
+                rentType,
+                userId
             }
         })
+        
+        // insert categories
+        if (category && category.length > 0) {
+            await prismaClient.product.update({
+              where: { id: product.id },
+              data: {
+                category: {
+                  connect: category.map((categoryId) => ({ id: categoryId })),
+                },
+              },
+            });
+        }
+        return product
     }
 
     public static updateProduct = async ( payload:UpdateProdductPayload ) => {
@@ -43,7 +61,6 @@ class ProductService{
             const {id,title,category,description,price,rentPrice,rentType} = payload
             const input = {
                 title,
-                category,
                 description,
                 price,
                 rentPrice,
@@ -53,18 +70,68 @@ class ProductService{
             where: { id },
             data: input,
           });
+          
+          // update categories
+          if (category && category.length > 0) {
+          
+            await prismaClient.product.update({
+              where: { id: updatedProduct.id },
+              data: {
+                category: {
+                  connect: category.map((categoryId) => ({ id: categoryId })),
+                },
+              },
+            });
+        }
           return updatedProduct;
         } catch (error:any) {
           throw new Error(`Error updating product: ${error.message}`);
         }
+        
       };
     
-    public static deleteProduct(id:string){
-        return prismaClient.product.delete({ where: { id } });
-    }
+    public static deleteProduct(id?:string){
+        const status= prismaClient.product.delete({ where: { id } });
+        console.log(status)
+        return "succesfullty Deleted"
+      }
     
-    public static getProductByUser(id?: string) {
-        return prismaClient.product.findMany({ where: { id } });
+    public static getProductByUser(userId?: string) {
+      console.log(userId)
+        return prismaClient.product.findMany(
+            { 
+                where: { userId },
+                include: {
+                    category: {
+                      select: {
+                        id: true, 
+                        name: true,
+                        slug:true 
+                        // Add other relevant fields you want to retrieve
+                      },
+                    },
+                   
+                  } 
+         });
+      }
+
+      public static getProductById(id: string) {
+        return prismaClient.product.findUnique(
+            { 
+                where: { id },
+                include: {
+                    category: {
+                      select: {
+                        id: true, 
+                        name: true,
+                        slug:true 
+                        // Add other relevant fields you want to retrieve
+                      },
+                      
+                    },
+                    
+                  } 
+         });
       }
 
 }

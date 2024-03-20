@@ -7,8 +7,11 @@ const JWT_SECRET = "$uperM@n@123";
 export interface CreateUserPayload {
   firstName: string;
   lastName?: string;
+  address?: string;
   email: string;
+  phoneNo?:string;
   password: string;
+  confirmPassword:string
 }
 
 export interface GetUserTokenPayload {
@@ -24,13 +27,18 @@ class UserService {
     return hashedPassword;
   }
 
-  public static getUserById(id?: string) {
+  public static getAllUsers(id?: string) {
     return prismaClient.user.findMany({ where: { id } });
+  }
+  public static getUserById(id?: string) {
+    return prismaClient.user.findUnique({ where: { id } });
   }
 
   public static registration(payload: CreateUserPayload) {
-    const { firstName, lastName, email, password } = payload;
-
+    const { firstName, lastName,address, email, phoneNo, password, confirmPassword } = payload;
+    if (password !== confirmPassword){
+      throw new Error("Both Passwords Should Match");
+    }
     const salt = randomBytes(32).toString("hex");
     const hashedPassword = UserService.generateHash(salt, password);
 
@@ -38,7 +46,9 @@ class UserService {
       data: {
         firstName,
         lastName,
+        address,
         email,
+        phoneNo,
         salt,
         password: hashedPassword,
       },
@@ -62,7 +72,8 @@ class UserService {
 
     // Gen Token
     const token = JWT.sign({ id: user.id, email: user.email }, JWT_SECRET);
-    return token;
+    // return token;
+    return user.id
   }
 
   public static decodeJWTToken(token: string) {

@@ -1,18 +1,23 @@
 import ProductService, { CreateProductPayload, UpdateProdductPayload } from "../../services/product";
-// getUserToken
+
+
+
 const queries = {
   getProductByUser: async (_: any, parameters: any, context: any) => {
-    // console.log(parameters,context)
     const products = await ProductService.getProductByUser(parameters.userId);
+    console.log(products)
       return products;
-    // throw new Error("I dont know who are you");
-    // return 'Product list'
+   
   },
+  getProductById:async (_: any, parameters: any, context: any) =>{
+    const product = await ProductService.getProductById(parameters.id)
+    return product
+  }
 
 };
 
 const mutations = {
-  createProduct: async (_: any, payload: CreateProductPayload) => {
+  createProduct: async (_: any, payload: any) => {
 
     const res = await ProductService.createProduct(payload);
     return res.id;
@@ -21,13 +26,13 @@ const mutations = {
   updateProduct:async (_: any, payload: UpdateProdductPayload) => {
 
     const res = await ProductService.updateProduct(payload);
-    return res.id;
+    return res.id
 
   },
   deleteProduct:async (_: any, parameters: any) => {
-    
-    const res = await ProductService.deleteProduct(parameters.productId);
-    return res.id;
+    console.log(parameters)
+    const res =  ProductService.deleteProduct(parameters.id);
+    return res;
     
   },
 };
